@@ -4,6 +4,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import showinfo
 
+from numpy import pad
+
 def next_turn(row, column):
 
     global player
@@ -16,13 +18,13 @@ def next_turn(row, column):
 
             if check_winner() is False:
                 player = players[1]
-                label.config(text=(players[1]+" turn"))
+                label.config(text=("Vez de "+players[1]))
 
             elif check_winner() is True:
-                label.config(text=(players[0]+" wins"))
+                label.config(text=(players[0]+" Venceu"))
 
-            elif check_winner() == "Tie":
-                label.config(text="Tie!")
+            elif check_winner() == "Empate":
+                label.config(text="Empate!")
 
         else:
 
@@ -30,13 +32,13 @@ def next_turn(row, column):
 
             if check_winner() is False:
                 player = players[0]
-                label.config(text=(players[0]+" turn"))
+                label.config(text=("Vez de "+players[0]))
 
             elif check_winner() is True:
-                label.config(text=(players[1]+" wins"))
+                label.config(text=(players[1]+" Venceu"))
 
-            elif check_winner() == "Tie":
-                label.config(text="Tie!")
+            elif check_winner() == "Empate":
+                label.config(text="Empate!")
 
 
 def check_winner():
@@ -72,7 +74,7 @@ def check_winner():
         for row in range(3):
             for column in range(3):
                 buttons[row][column].config(bg="yellow")
-        return "Tie"
+        return "Empate"
 
     else:
         return False
@@ -99,7 +101,7 @@ def new_game():
 
     player = random.choice(players)
 
-    label.config(text=player+" turn")
+    label.config(text="Vez de "+player)
 
     for row in range(3):
         for column in range(3):
@@ -107,44 +109,43 @@ def new_game():
 
 
 window = Tk()
-window.title("Tic-Tac-Toe")
+window.title("TicTacToe")
 players = ["X", "O"]
 player = random.choice(players)
 buttons = [[0, 0, 0],
            [0, 0, 0],
            [0, 0, 0]]
 
-label = Label(text=player + " turn", font=('consolas', 40))
-label.pack(side="top")
+label = Label(text="Vez de "+player, font=('consolas', 40))
+label.grid(row=1, pady=60)
 
 reset_button = Button(window, text="restart", font=(
-    'consolas', 15), command=new_game)
-reset_button.pack(side="top")
+    'consolas', 10), command=new_game)
+reset_button.place(x=50, y=137)
+
+
 
 tkvar = StringVar(window)
 choices = ['Fácil','Médio','Difícil', 'Jogar contra um amigo']
 tkvar.set('Fácil') # set the default option
 
 popupMenu = OptionMenu(window, tkvar, *choices)
-Label(window, text="Escolha a dificuldade").pack(side="top", padx=100, pady=0)
-popupMenu.pack(side="top", padx=0, pady=0)
+Label(window, text="Escolha a dificuldade:").place(x=140, y=140)
+popupMenu.place(x=280, y=135)
 
 def change_dropdown(*args):
     print( tkvar.get() )
     
 tkvar.trace('w', change_dropdown)
-
+        
+    
 def download_clicked_o():
-    showinfo(
-        title='Information',
-        message='Você escolheu O'
-    )
-
+    pass
+        
 def download_clicked_x():
-    showinfo(
-        title='Information',
-        message='Você escolheu X'
-    )
+    pass
+    
+Label(window, text="Escolha o jogador:").place(x=100, y=30)
 
 download_icon_o = tk.PhotoImage(file='./assets/o.png')
 download_button_o = ttk.Button(
@@ -153,11 +154,8 @@ download_button_o = ttk.Button(
     command=download_clicked_o
 )
 
-download_button_o.pack(
-    ipadx=10,
-    ipady=10,
-    expand=True
-)
+
+download_button_o.place(x=250, y=15)
 
 download_icon_x = tk.PhotoImage(file='./assets/x.png')
 download_button_x = ttk.Button(
@@ -166,15 +164,11 @@ download_button_x = ttk.Button(
     command=download_clicked_x
 )
 
-download_button_x.pack(
-    ipadx=10,
-    ipady=10,
-    expand=True
-)
+download_button_x.place(x=330, y=15)
 
 
 frame = Frame(window)
-frame.pack()
+frame.grid()
 
 for row in range(3):
     for column in range(3):
