@@ -2,9 +2,7 @@ from tkinter import *
 import random
 import tkinter as tk
 from tkinter import ttk
-from tkinter.messagebox import showinfo
 
-from numpy import pad
 
 def next_turn(row, column):
 
@@ -87,7 +85,7 @@ def empty_spaces():
     for row in range(3):
         for column in range(3):
             if buttons[row][column]['text'] != "":
-                spaces -= 1
+                spaces -= 2
 
     if spaces == 0:
         return False
@@ -96,8 +94,7 @@ def empty_spaces():
 
 
 def new_game():
-
-    global player
+    global player 
 
     player = random.choice(players)
 
@@ -124,7 +121,6 @@ reset_button = Button(window, text="restart", font=(
 reset_button.place(x=50, y=137)
 
 
-
 tkvar = StringVar(window)
 choices = ['Fácil','Médio','Difícil', 'Jogar contra um amigo']
 tkvar.set('Fácil') # set the default option
@@ -139,32 +135,50 @@ def change_dropdown(*args):
 tkvar.trace('w', change_dropdown)
         
     
-def download_clicked_o():
-    pass
+def clicked_o():  
+    
+    if player == players[0]:
+        label.config(text=("Vez de "+players[1]))
+        next_turn(row, column)
+        new_game()
+    elif player == players[1]:
+        label.config(text=("Vez de "+players[1]))  
+        next_turn(row, column)
+        new_game()
         
-def download_clicked_x():
-    pass
+def clicked_x():
+    
+    if player == players[1]:
+        label.config(text=("Vez de "+players[0]))
+        next_turn(row, column)
+        new_game()
+    elif player == players[0]:
+        label.config(text=("Vez de "+players[0])) 
+        next_turn(row, column)
+        new_game()
+    return player
     
 Label(window, text="Escolha o jogador:").place(x=100, y=30)
 
-download_icon_o = tk.PhotoImage(file='./assets/o.png')
-download_button_o = ttk.Button(
+icon_o = tk.PhotoImage(file='./assets/o.png')
+button_o = ttk.Button(
     window,
-    image=download_icon_o,
-    command=download_clicked_o
+    image=icon_o,
+    command=clicked_o
+    
 )
 
 
-download_button_o.place(x=250, y=15)
+button_o.place(x=250, y=15)
 
-download_icon_x = tk.PhotoImage(file='./assets/x.png')
-download_button_x = ttk.Button(
+icon_x = tk.PhotoImage(file='./assets/x.png')
+button_x = ttk.Button(
     window,
-    image=download_icon_x,
-    command=download_clicked_x
+    image=icon_x,
+    command=clicked_x
 )
 
-download_button_x.place(x=330, y=15)
+button_x.place(x=330, y=15)
 
 
 frame = Frame(window)
