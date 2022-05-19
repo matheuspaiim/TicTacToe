@@ -96,8 +96,6 @@ def empty_spaces():
 def new_game():
     global player 
 
-    player = random.choice(players)
-
     label.config(text="Vez de "+player)
 
     for row in range(3):
@@ -108,7 +106,7 @@ def new_game():
 window = Tk()
 window.title("TicTacToe")
 players = ["X", "O"]
-player = random.choice(players)
+player = "X"
 buttons = [[0, 0, 0],
            [0, 0, 0],
            [0, 0, 0]]
@@ -141,10 +139,7 @@ def clicked_o():
         label.config(text=("Vez de "+players[1]))
         next_turn(row, column)
         new_game()
-    elif player == players[1]:
-        label.config(text=("Vez de "+players[1]))  
-        next_turn(row, column)
-        new_game()
+
         
 def clicked_x():
     
@@ -152,11 +147,7 @@ def clicked_x():
         label.config(text=("Vez de "+players[0]))
         next_turn(row, column)
         new_game()
-    elif player == players[0]:
-        label.config(text=("Vez de "+players[0])) 
-        next_turn(row, column)
-        new_game()
-    return player
+
     
 Label(window, text="Escolha o jogador:").place(x=100, y=30)
 
