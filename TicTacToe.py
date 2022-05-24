@@ -5,15 +5,14 @@ from tkinter import ttk
 
 # GAME OPERATION
 
-
 def new_game():
     global player 
 
-    label.config(text="Vez de "+player)
+    label.config(text="Vez de "+player, foreground="red")
 
     for row in range(3):
         for column in range(3):
-            buttons[row][column].config(text="", bg="#F0F0F0")
+            buttons[row][column].config(text="", bg="#3b3b3b")
 
 
 def empty_spaces():
@@ -35,35 +34,35 @@ def check_winner():
 
     for row in range(3):
         if buttons[row][0]['text'] == buttons[row][1]['text'] == buttons[row][2]['text'] != "":
-            buttons[row][0].config(bg="green")
-            buttons[row][1].config(bg="green")
-            buttons[row][2].config(bg="green")
+            buttons[row][0].config(bg="forestgreen")
+            buttons[row][1].config(bg="forestgreen")
+            buttons[row][2].config(bg="forestgreen")
             return True
 
     for column in range(3):
         if buttons[0][column]['text'] == buttons[1][column]['text'] == buttons[2][column]['text'] != "":
-            buttons[0][column].config(bg="green")
-            buttons[1][column].config(bg="green")
-            buttons[2][column].config(bg="green")
+            buttons[0][column].config(bg="forestgreen")
+            buttons[1][column].config(bg="forestgreen")
+            buttons[2][column].config(bg="forestgreen")
             return True
 
     if buttons[0][0]['text'] == buttons[1][1]['text'] == buttons[2][2]['text'] != "":
-        buttons[0][0].config(bg="green")
-        buttons[1][1].config(bg="green")
-        buttons[2][2].config(bg="green")
+        buttons[0][0].config(bg="forestgreen")
+        buttons[1][1].config(bg="forestgreen")
+        buttons[2][2].config(bg="forestgreen")
         return True
 
     elif buttons[0][2]['text'] == buttons[1][1]['text'] == buttons[2][0]['text'] != "":
-        buttons[0][2].config(bg="green")
-        buttons[1][1].config(bg="green")
-        buttons[2][0].config(bg="green")
+        buttons[0][2].config(bg="forestgreen")
+        buttons[1][1].config(bg="forestgreen")
+        buttons[2][0].config(bg="forestgreen")
         return True
 
     elif empty_spaces() is False:
 
         for row in range(3):
             for column in range(3):
-                buttons[row][column].config(bg="yellow")
+                buttons[row][column].config(bg="gold")
         return "Empate"
 
     else:
@@ -80,17 +79,17 @@ def human_player(row, column):
 
         if player == players[0]:
 
-            buttons[row][column]['text'] = player 
+            buttons[row][column]['text'] = player
 
             if check_winner() is False:
                 player = players[1]
-                label.config(text=("Vez de "+players[1]))
+                label.config(text=("Vez de "+players[1]), foreground="mediumblue")
 
             elif check_winner() is True:
-                label.config(text=(players[0]+" Venceu"))
+                label.config(text=(players[0]+" Venceu"), foreground="forestgreen")
 
             elif check_winner() == "Empate":
-                label.config(text="Empate!")
+                label.config(text="Empate!", foreground="gold")
 
         else:
 
@@ -98,22 +97,22 @@ def human_player(row, column):
 
             if check_winner() is False:
                 player = players[0]
-                label.config(text=("Vez de "+players[0]))
+                label.config(text=("Vez de "+players[0]), foreground="red")
 
             elif check_winner() is True:
-                label.config(text=(players[1]+" Venceu"))
+                label.config(text=(players[1]+" Venceu"), foreground="forestgreen")
 
             elif check_winner() == "Empate":
-                label.config(text="Empate!")
+                label.config(text="Empate!", foreground="gold")
 
 def easy():
-    pass
-
+    new_game()
+     
 def medium():
-    pass
+    new_game()
 
 def hard():
-    pass
+    new_game()
 
 
 # MAINFRAME
@@ -121,17 +120,18 @@ def hard():
 window = Tk()
 window.title("TicTacToe")
 players = ["X", "O"]
-player = random.choice(players)
+player = "X"
+bot = random.choice(players)
 buttons = [[0, 0, 0],
            [0, 0, 0],
            [0, 0, 0]]
 
 
-label = Label(text="Vez de "+player, font=('consolas', 40))
-label.grid(row=1, pady=60)
+label = Label(text="Vez de "+player, font=('Sans-serif', 30))
+label.grid(row=1, pady=70)
 
-reset_button = Button(window, text="restart", font=(
-    'consolas', 10), command=new_game)
+reset_button = Button(window, text="Restart", font=(
+    'Sans-serif', 10), command=new_game)
 reset_button.place(x=50, y=137)
 
 frame = Frame(window)
@@ -143,8 +143,9 @@ tkvar = StringVar(window)
 choices = ["Fácil", "Médio", "Difícil", "Jogar contra um amigo"]
 tkvar.set(choices[0]) # SET THE DEFAULT OPTION
 popupMenu = OptionMenu(window, tkvar, *choices)
-Label(window, text="Escolha a dificuldade:").place(x=140, y=140)
-popupMenu.place(x=280, y=135)
+Label(window, text="Escolha a dificuldade:", font=(
+    'Sans-serif')).place(x=120, y=140)
+popupMenu.place(x=280, y=136)
 
 def change_dropdown(*choices):
     
@@ -163,14 +164,15 @@ def change_dropdown(*choices):
     
 tkvar.trace('w', change_dropdown)
   
-Label(window, text="Escolha o jogador:").place(x=100, y=30)  
+Label(window, text="Escolha o jogador:", font=(
+    'Sans-serif')).place(x=100, y=30)  
         
 # CHOOSE O BUTTON 
     
 def clicked_o():  
     
     if player == players[0]:
-        label.config(text=("Vez de "+players[1]))
+        label.config(text=("Vez de "+players[1]), foreground="mediumblue")
         human_player(row, column)
         new_game()
 
@@ -189,7 +191,7 @@ button_o.place(x=250, y=15)
 def clicked_x():
     
     if player == players[1]:
-        label.config(text=("Vez de "+players[0]))
+        label.config(text=("Vez de "+players[0]), foreground="red")
         human_player(row, column)
         new_game()
 
@@ -208,7 +210,7 @@ button_x.place(x=330, y=15)
 for row in range(3):
     for column in range(3):
         buttons[row][column] = Button(frame, text="", font=('consolas', 40), width=5, height=2,
-                                      command=lambda row=row, column=column: human_player(row, column))
+                                      command=lambda row=row, column=column: human_player(row, column), bg="#3b3b3b")
         buttons[row][column].grid(row=row, column=column)
 
 window.mainloop()
