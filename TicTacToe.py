@@ -1,14 +1,16 @@
+from secrets import choice
 from tkinter import *
 import random
 import tkinter as tk
 from tkinter import ttk
+from tkinter.font import BOLD
 
 # GAME OPERATION
 
 def new_game():
     global player 
 
-    label.config(text="Vez de "+player, foreground="red")
+    label.config(text="Vez de - "+ player)
 
     for row in range(3):
         for column in range(3):
@@ -83,10 +85,10 @@ def human_player(row, column):
 
             if check_winner() is False:
                 player = players[1]
-                label.config(text=("Vez de "+players[1]), foreground="mediumblue")
+                label.config(text=("Vez de - "+players[1]), foreground="mediumblue")
 
             elif check_winner() is True:
-                label.config(text=(players[0]+" Venceu"), foreground="forestgreen")
+                label.config(text=(players[0]+" - Venceu"), foreground="forestgreen")
 
             elif check_winner() == "Empate":
                 label.config(text="Empate!", foreground="gold")
@@ -97,10 +99,10 @@ def human_player(row, column):
 
             if check_winner() is False:
                 player = players[0]
-                label.config(text=("Vez de "+players[0]), foreground="red")
+                label.config(text=("Vez de - "+players[0]), foreground="red")
 
             elif check_winner() is True:
-                label.config(text=(players[1]+" Venceu"), foreground="forestgreen")
+                label.config(text=(players[1]+" - Venceu"), foreground="forestgreen")
 
             elif check_winner() == "Empate":
                 label.config(text="Empate!", foreground="gold")
@@ -127,7 +129,7 @@ buttons = [[0, 0, 0],
            [0, 0, 0]]
 
 
-label = Label(text="Vez de "+player, font=('Sans-serif', 30))
+label = Label(text="Vez de - "+ player, font=('Sans-serif', 30), foreground="red")
 label.grid(row=1, pady=70)
 
 reset_button = Button(window, text="Restart", font=(
@@ -143,8 +145,7 @@ tkvar = StringVar(window)
 choices = ["Fácil", "Médio", "Difícil", "Jogar contra um amigo"]
 tkvar.set(choices[0]) # SET THE DEFAULT OPTION
 popupMenu = OptionMenu(window, tkvar, *choices)
-Label(window, text="Escolha a dificuldade:", font=(
-    'Sans-serif')).place(x=120, y=140)
+Label(window, text="Escolha a dificuldade:").place(x=120, y=140)
 popupMenu.place(x=280, y=136)
 
 def change_dropdown(*choices):
@@ -163,11 +164,15 @@ def change_dropdown(*choices):
            
     
 tkvar.trace('w', change_dropdown)
-  
-Label(window, text="Escolha o jogador:", font=(
-    'Sans-serif')).place(x=100, y=30)  
         
 # CHOOSE O BUTTON 
+
+Label(window, text="Escolha o jogador:", font=(
+    'Sans-serif')).place(x=70, y=30)
+score_o = Label(window, text="0", font=(
+    'Sans-serif')).place(x=327, y=30)  
+score_x = Label(window, text="0", font=(
+    'Sans-serif')).place(x=428, y=30)  
     
 def clicked_o():  
     
@@ -184,7 +189,7 @@ button_o = ttk.Button(
     
 )
 
-button_o.place(x=250, y=15)
+button_o.place(x=260, y=15)
 
 # CHOOSE X BUTTON
         
@@ -202,15 +207,15 @@ button_x = ttk.Button(
     command=clicked_x
 )
 
-button_x.place(x=330, y=15)
+button_x.place(x=360, y=15)
 
 
 # BOARD (BUTTONS)
 
 for row in range(3):
     for column in range(3):
-        buttons[row][column] = Button(frame, text="", font=('consolas', 40), width=5, height=2,
-                                      command=lambda row=row, column=column: human_player(row, column), bg="#3b3b3b")
+        buttons[row][column] = Button(frame, text="", font=('Sans-serif', 40), width=5, height=2,
+                                      command=lambda row=row, column=column: human_player(row, column), bg="#3b3b3b", foreground="white")
         buttons[row][column].grid(row=row, column=column)
 
 window.mainloop()
