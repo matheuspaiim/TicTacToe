@@ -10,7 +10,7 @@ from tkinter import font as tkFont
 
 def new_game():
     
-    global players
+    global player
 
     label.config(text="Vez de "+player)
     if player == players[0]:
@@ -25,20 +25,20 @@ def new_game():
 
 
 def empty_spaces():
-
+    global space
     spaces = 9
-
+    
     for row in range(3):
         for column in range(3):
             if buttons[row][column]['text'] != "":
                 spaces -= 1
-
+                space += 1
     if spaces == 0:
         return False
     else:
         return True
-    
-
+  
+        
 def check_winner():
 
     for row in range(3):
@@ -77,12 +77,12 @@ def check_winner():
     else:
         return False
     
-
+    
 # DIFFICULTIES
 
 def human_player(row, column):
     
-    global player, bot, score_o, score_x, score_x_label, score_o_label
+    global player, bot, score_o, score_x
 
     if buttons[row][column]['text'] == "" and check_winner() is False:
 
@@ -92,10 +92,10 @@ def human_player(row, column):
             
             if check_winner() is False:
                 player = players[1]
-                label.config(text=("Vez de "+players[1]), foreground="#3297a8")
+                label.config(text=("Vez de "+bot), foreground="#3297a8")
 
             elif check_winner() is True:
-                label.config(text=(players[0]+" Venceu"), foreground="forestgreen")
+                label.config(text=(player+" Venceu"), foreground="forestgreen")
                 score_x+=1
                 score_x_label['text'] = score_x
                 
@@ -108,10 +108,10 @@ def human_player(row, column):
 
             if check_winner() is False:
                 player = players[0]
-                label.config(text=("Vez de "+players[0]), foreground="#e85151")
-
+                label.config(text=("Vez de "+player), foreground="#e85151")
+    
             elif check_winner() is True:
-                label.config(text=(players[1]+" Venceu"), foreground="forestgreen")
+                label.config(text=(bot+" Venceu"), foreground="forestgreen")
                 score_o+=1
                 score_o_label['text'] = score_o
                                           
@@ -119,8 +119,46 @@ def human_player(row, column):
                 label.config(text="Empate!", foreground="gold")
 
 def easy():
+    
     new_game()
-     
+    global player, score_o, score_x, space
+
+    if buttons[row][column]['text'] == "" and check_winner() is False:
+
+        if player == players[0]:
+
+            buttons[random.randrange(3)][random.randrange(3)]['text'] = bots[0]
+            
+            if check_winner() is False:
+                player = players[1]
+                label.config(text=("Vez de "+bot), foreground="#3297a8")             
+                
+            elif check_winner() is True:
+                label.config(text=(player+" Venceu"), foreground="forestgreen")
+                score_x+=1
+                score_x_label['text'] = score_x
+                
+            elif check_winner() == "Empate":
+                label.config(text="Empate!", foreground="gold")
+                
+        else:
+
+                buttons[random.randrange(3)][random.randrange(3)]['text'] = bots[1]
+
+                if check_winner() is False:
+                    player = players[0]
+                    label.config(text=("Vez de "+player), foreground="#e85151")
+                    
+                elif check_winner() is True:
+                    label.config(text=(bot+" Venceu"), foreground="forestgreen")
+                    score_o+=1
+                    score_o_label['text'] = score_o
+                                            
+                elif check_winner() == "Empate":
+                    label.config(text="Empate!", foreground="gold")
+
+
+               
 def medium():
     new_game()
 
@@ -132,7 +170,9 @@ def hard():
 
 window = Tk()
 window.title("TicTacToe")
+space = 2
 players = ["X", "O"]
+bots = ["X", "O"]
 player = "X"
 bot = "O"
 buttons = [[0, 0, 0],
@@ -197,6 +237,7 @@ score_break.place(x=149, y=118)
   
   
 def clicked_o():  
+    
     global score_o, score_x, score_x_label, score_o_label
     
     if player == players[0]:
@@ -209,7 +250,7 @@ def clicked_o():
         score_x_label['text'] = 0
     else:
         human_player(row, column)
-        new_game()    
+        new_game()
         label.config(text=("Vez de "+players[1]), foreground="#3297a8")    
         score_o = 0
         score_x = 0
@@ -230,6 +271,7 @@ button_o.place(x=40, y=110)
 # CHOOSE X BUTTON
         
 def clicked_x():
+    
     global score_o, score_x, score_x_label, score_o_label
     
     if player == players[1]:
@@ -240,9 +282,9 @@ def clicked_x():
         score_x = 0
         score_o_label['text'] = 0
         score_x_label['text'] = 0
-    else:      
+    else:   
         human_player(row, column)
-        new_game()  
+        new_game()
         label.config(text=("Vez de "+players[0]), foreground="#e85151") 
         score_o = 0
         score_x = 0
