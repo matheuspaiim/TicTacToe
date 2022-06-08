@@ -3,6 +3,7 @@ import random
 import tkinter as tk
 from tkinter import ttk
 from tkinter import font as tkFont
+from zoneinfo import available_timezones
 
 
 
@@ -12,12 +13,10 @@ def new_game():
     
     global player
 
-    label.config(text="Vez de "+player)
     if player == players[0]:
-        label.config(text=("Vez de "+players[0]), foreground="#e85151")
+        label_x()
     else:
-        label.config(text=("Vez de "+players[1]), foreground="#3297a8")
-    
+        label_o()
 
     for row in range(3):
         for column in range(3):
@@ -25,14 +24,14 @@ def new_game():
 
 
 def empty_spaces():
-    global space
+    global spaces   
     spaces = 9
     
     for row in range(3):
         for column in range(3):
             if buttons[row][column]['text'] != "":
                 spaces -= 1
-                space += 1
+                                
     if spaces == 0:
         return False
     else:
@@ -76,13 +75,64 @@ def check_winner():
 
     else:
         return False
+
+
+# REUSABLE FUNCTIONS
+
+def label_x():    
+    
+   label.config(text=("Vez de "+players[0]), foreground="#e85151")
+   
+    
+def label_o():    
+    
+    label.config(text=("Vez de "+players[1]), foreground="#3297a8")     
     
     
+def bot_move():  
+      
+    global player
+    
+    player = players[1]
+    label.config(text=("Vez de "+bot), foreground="#3297a8")
+    
+
+def player_move(): 
+       
+    global player
+    
+    player = players[0]
+    label.config(text=("Vez de "+player), foreground="#e85151")    
+
+
+def bot_win():  
+      
+    global player, score_o
+    
+    label.config(text=(bot+" Venceu"), foreground="forestgreen")
+    score_o+=1
+    score_o_label['text'] = score_o        
+ 
+ 
+def player_win():   
+    
+    global player, score_x  
+      
+    label.config(text=(player+" Venceu"), foreground="forestgreen")
+    score_x+=1
+    score_x_label['text'] = score_x    
+
+
+def tie():
+    
+    label.config(text="Empate!", foreground="gold")   
+    
+        
 # DIFFICULTIES
 
 def human_player(row, column):
     
-    global player, bot, score_o, score_x
+    global player
 
     if buttons[row][column]['text'] == "" and check_winner() is False:
 
@@ -91,71 +141,75 @@ def human_player(row, column):
             buttons[row][column]['text'] = player
             
             if check_winner() is False:
-                player = players[1]
-                label.config(text=("Vez de "+bot), foreground="#3297a8")
+                bot_move()
 
             elif check_winner() is True:
-                label.config(text=(player+" Venceu"), foreground="forestgreen")
-                score_x+=1
-                score_x_label['text'] = score_x
+                player_win()
                 
             elif check_winner() == "Empate":
-                label.config(text="Empate!", foreground="gold")
+                tie()
 
         else:
 
             buttons[row][column]['text'] = player
 
             if check_winner() is False:
-                player = players[0]
-                label.config(text=("Vez de "+player), foreground="#e85151")
+                player_move()
     
             elif check_winner() is True:
-                label.config(text=(bot+" Venceu"), foreground="forestgreen")
-                score_o+=1
-                score_o_label['text'] = score_o
+                bot_win()
                                           
             elif check_winner() == "Empate":
-                label.config(text="Empate!", foreground="gold")
+                tie()
 
 def easy():
     
     new_game()
-    global player, score_o, score_x, space
+    
+    global player, spaces
 
     if buttons[row][column]['text'] == "" and check_winner() is False:
 
         if player == players[0]:
 
-            buttons[random.randrange(3)][random.randrange(3)]['text'] = bots[0]
-            
-            if check_winner() is False:
-                player = players[1]
-                label.config(text=("Vez de "+bot), foreground="#3297a8")             
+            buttons[random.randrange(3)][random.randrange(3)]['text'] = bots[0]           
+
+            while check_winner() is False:
                 
-            elif check_winner() is True:
-                label.config(text=(player+" Venceu"), foreground="forestgreen")
-                score_x+=1
-                score_x_label['text'] = score_x
+                if spaces % 2 == 1:
+                    buttons[random.randrange(3)][random.randrange(3)]['text'] = bots[0]
+                else:
+                    bot_move() 
+                break
+            
+            if check_winner() is True:
+                player_win()
                 
             elif check_winner() == "Empate":
-                label.config(text="Empate!", foreground="gold")
+                tie()
                 
         else:
 
-                buttons[random.randrange(3)][random.randrange(3)]['text'] = bots[1]
+            buttons[random.randrange(3)][random.randrange(3)]['text'] = bots[1]
+            player_move()            
+            
+            while check_winner() is False:
 
-                if check_winner() is False:
-                    player = players[0]
-                    label.config(text=("Vez de "+player), foreground="#e85151")
+                if player_move():
+                    buttons[random.randrange(3)][random.randrange(3)]['text'] = bots[1]
                     
-                elif check_winner() is True:
-                    label.config(text=(bot+" Venceu"), foreground="forestgreen")
-                    score_o+=1
-                    score_o_label['text'] = score_o
-                                            
-                elif check_winner() == "Empate":
-                    label.config(text="Empate!", foreground="gold")
+                else:
+                    player_move()
+                break
+            
+            if check_winner() is False:
+                player_move()
+    
+            elif check_winner() is True:
+                bot_win()
+                                          
+            elif check_winner() == "Empate":
+                tie()
 
 
                
@@ -165,7 +219,7 @@ def medium():
 def hard():
     new_game()
 
-    
+     
 # MAINFRAME
 
 window = Tk()
@@ -188,6 +242,7 @@ reset_button.place(x=215, y=29)
 
 frame = Frame(window)
 frame.grid()
+
 
 # DROPDOWN
 
@@ -219,8 +274,9 @@ def change_dropdown(*choices):
            
     
 tkvar.trace('w', change_dropdown)
+      
         
-# CHOOSE O BUTTON 
+# SCORE
 
 score_o = 0
 score_x = 0
@@ -234,30 +290,30 @@ score_x_label.place(x=173, y=120)
 score_break = Label(window, text=":", font=(
     'Sans-serif', 20, 'bold'))
 score_break.place(x=149, y=118)  
+   
+def restarting_score():
+    
+    global score_o, score_x
+    score_o = 0
+    score_x = 0
+    score_o_label['text'] = 0
+    score_x_label['text'] = 0   
   
   
+# CHOOSE "O" BUTTON 
+
 def clicked_o():  
-    
-    global score_o, score_x, score_x_label, score_o_label
-    
+        
     if player == players[0]:
         human_player(row, column)
         new_game()
-        label.config(text=("Vez de "+players[1]), foreground="#3297a8")
-        score_o = 0
-        score_x = 0
-        score_o_label['text'] = 0
-        score_x_label['text'] = 0
+        label_o()
+        restarting_score()
     else:
         human_player(row, column)
         new_game()
-        label.config(text=("Vez de "+players[1]), foreground="#3297a8")    
-        score_o = 0
-        score_x = 0
-        score_o_label['text'] = 0
-        score_x_label['text'] = 0
-        
-        
+        label_o()    
+        restarting_score()    
 
 icon_o = tk.PhotoImage(file='./assets/o.png')
 button_o = ttk.Button(
@@ -268,29 +324,21 @@ button_o = ttk.Button(
 
 button_o.place(x=40, y=110)
 
-# CHOOSE X BUTTON
+
+# CHOOSE "X" BUTTON
         
 def clicked_x():
-    
-    global score_o, score_x, score_x_label, score_o_label
-    
+        
     if player == players[1]:
         human_player(row, column)
         new_game()
-        label.config(text=("Vez de "+players[0]), foreground="#e85151")
-        score_o = 0
-        score_x = 0
-        score_o_label['text'] = 0
-        score_x_label['text'] = 0
+        label_x()
+        restarting_score()
     else:   
         human_player(row, column)
         new_game()
-        label.config(text=("Vez de "+players[0]), foreground="#e85151") 
-        score_o = 0
-        score_x = 0
-        score_o_label['text'] = 0
-        score_x_label['text'] = 0
-        
+        label_x() 
+        restarting_score()
 
 icon_x = tk.PhotoImage(file='./assets/x.png')
 button_x = ttk.Button(
