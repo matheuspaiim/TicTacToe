@@ -7,7 +7,7 @@ from zoneinfo import available_timezones
 
 
 
-# GAME OPERATION
+# ____________________GAME OPERATION______________________
 
 def new_game():
     
@@ -24,7 +24,9 @@ def new_game():
 
 
 def empty_spaces():
+    
     global spaces   
+    
     spaces = 9
     
     for row in range(3):
@@ -77,7 +79,7 @@ def check_winner():
         return False
 
 
-# REUSABLE FUNCTIONS
+# __________________REUSABLE FUNCTIONS_____________________
 
 def label_x():    
     
@@ -126,9 +128,44 @@ def player_win():
 def tie():
     
     label.config(text="Empate!", foreground="gold")   
+ 
+   
+def restarting_score():
     
+    global score_o, score_x
+    score_o = 0
+    score_x = 0
+    score_o_label['text'] = 0
+    score_x_label['text'] = 0   
+   
+  
+def checking():
+    
+    if check_winner() is False:
+        bot_move()
+
+    elif check_winner() is True:
+        player_win()
         
-# DIFFICULTIES
+    elif check_winner() == "Empate":
+        tie()     
+
+
+def click():
+    human_player(row, column)
+    new_game()
+    label_x()
+    restarting_score()
+
+
+def click_2():
+    human_player(row, column)
+    new_game()
+    label_o()
+    restarting_score()
+
+        
+# ___________________DIFFICULTIES_______________________
 
 def human_player(row, column):
     
@@ -140,27 +177,13 @@ def human_player(row, column):
 
             buttons[row][column]['text'] = player
             
-            if check_winner() is False:
-                bot_move()
-
-            elif check_winner() is True:
-                player_win()
-                
-            elif check_winner() == "Empate":
-                tie()
+            checking()
 
         else:
 
             buttons[row][column]['text'] = player
 
-            if check_winner() is False:
-                player_move()
-    
-            elif check_winner() is True:
-                bot_win()
-                                          
-            elif check_winner() == "Empate":
-                tie()
+            checking()
 
 def easy():
     
@@ -202,15 +225,7 @@ def easy():
                     player_move()
                 break
             
-            if check_winner() is False:
-                player_move()
-    
-            elif check_winner() is True:
-                bot_win()
-                                          
-            elif check_winner() == "Empate":
-                tie()
-
+            checking()
 
                
 def medium():
@@ -220,7 +235,7 @@ def hard():
     new_game()
 
      
-# MAINFRAME
+# ______________________MAINFRAME______________________
 
 window = Tk()
 window.title("TicTacToe")
@@ -244,7 +259,7 @@ frame = Frame(window)
 frame.grid()
 
 
-# DROPDOWN
+# ______________________DROPDOWN________________________
 
 tkvar = StringVar(window)
 choices = ["Fácil", "Médio", "Difícil", "Jogar com um amigo"]
@@ -255,8 +270,6 @@ sans_serif = tkFont.Font(family='Sans-serif', size=10, weight="bold")
 popupMenu = OptionMenu(window, tkvar, *choices)
 popupMenu.config(font=sans_serif, padx=6, pady=6)
 popupMenu.place(x=30, y=27)
-
-
 
 def change_dropdown(*choices):
     
@@ -276,7 +289,7 @@ def change_dropdown(*choices):
 tkvar.trace('w', change_dropdown)
       
         
-# SCORE
+# ______________________SCORE__________________________
 
 score_o = 0
 score_x = 0
@@ -290,30 +303,16 @@ score_x_label.place(x=173, y=120)
 score_break = Label(window, text=":", font=(
     'Sans-serif', 20, 'bold'))
 score_break.place(x=149, y=118)  
-   
-def restarting_score():
-    
-    global score_o, score_x
-    score_o = 0
-    score_x = 0
-    score_o_label['text'] = 0
-    score_x_label['text'] = 0   
+
   
-  
-# CHOOSE "O" BUTTON 
+# _________________CHOOSE "O" BUTTON_____________________
 
 def clicked_o():  
         
     if player == players[0]:
-        human_player(row, column)
-        new_game()
-        label_o()
-        restarting_score()
+        click()
     else:
-        human_player(row, column)
-        new_game()
-        label_o()    
-        restarting_score()    
+        click_2()
 
 icon_o = tk.PhotoImage(file='./assets/o.png')
 button_o = ttk.Button(
@@ -325,20 +324,14 @@ button_o = ttk.Button(
 button_o.place(x=40, y=110)
 
 
-# CHOOSE "X" BUTTON
+# ___________________CHOOSE "X" BUTTON_____________________
         
 def clicked_x():
         
     if player == players[1]:
-        human_player(row, column)
-        new_game()
-        label_x()
-        restarting_score()
+        click()
     else:   
-        human_player(row, column)
-        new_game()
-        label_x() 
-        restarting_score()
+        click_2()
 
 icon_x = tk.PhotoImage(file='./assets/x.png')
 button_x = ttk.Button(
@@ -350,7 +343,7 @@ button_x = ttk.Button(
 button_x.place(x=210, y=110)
 
 
-# BOARD (BUTTONS)
+# ______________________BOARD(BUTTONS)_______________________
 
 for row in range(3):
     for column in range(3):
