@@ -28,12 +28,12 @@ def empty_spaces():
     global spaces   
     
     spaces = 9
-    
-    for row in range(3):
-        for column in range(3):
-            if buttons[row][column]['text'] != "":
-                spaces -= 1
-                                
+    while spaces >= 0 and spaces <= 9:
+        for row in range(3):
+            for column in range(3):
+                if buttons[row][column]['text'] != "":
+                    spaces -= 1
+        break            
     if spaces == 0:
         return False
     else:
@@ -125,49 +125,24 @@ def player_win():
     score_x_label['text'] = score_x    
 
 
-def tie():
-    
-    label.config(text="Empate!", foreground="gold")   
- 
-   
-def restarting_score():
-    
-    global score_o, score_x
-    score_o = 0
-    score_x = 0
-    score_o_label['text'] = 0
-    score_x_label['text'] = 0   
-   
-  
-def checking():
-    
-    if check_winner() is False:
-        bot_move()
-
-    elif check_winner() is True:
-        player_win()
-        
-    elif check_winner() == "Empate":
-        tie()     
-
-
 def click():
     human_player(row, column)
     new_game()
-    label_x()
+    label_x() 
     restarting_score()
 
 
-def click_2():
-    human_player(row, column)
-    new_game()
-    label_o()
-    restarting_score()
 
+def tie():
+    
+    label.config(text="Empate!", foreground="gold")   
+  
+     
         
 # ___________________DIFFICULTIES_______________________
 
 def human_player(row, column):
+    
     
     global player
 
@@ -177,56 +152,78 @@ def human_player(row, column):
 
             buttons[row][column]['text'] = player
             
-            checking()
+            if check_winner() is False:
+                bot_move()
+
+            elif check_winner() is True:
+                player_win()
+                
+            elif check_winner() == "Empate":
+                tie()
 
         else:
 
             buttons[row][column]['text'] = player
 
-            checking()
+            if check_winner() is False:
+                player_move()
+    
+            elif check_winner() is True:
+                bot_win()
+                                          
+            elif check_winner() == "Empate":
+                tie()
 
 def easy():
     
     new_game()
     
     global player, spaces
+    
+    while check_winner() is False:
+        
+        if buttons[row][column]['text'] == "" and check_winner() is False:
 
-    if buttons[row][column]['text'] == "" and check_winner() is False:
+            if player == players[0]:
 
-        if player == players[0]:
-
-            buttons[random.randrange(3)][random.randrange(3)]['text'] = bots[0]           
-
-            while check_winner() is False:
-                
-                if spaces % 2 == 1:
+                buttons[random.randrange(3)][random.randrange(3)]['text'] = bots[0]           
+                    
+                if spaces % 2 == 0:
                     buttons[random.randrange(3)][random.randrange(3)]['text'] = bots[0]
+                    print(spaces)
                 else:
                     bot_move() 
-                break
-            
-            if check_winner() is True:
-                player_win()
-                
-            elif check_winner() == "Empate":
-                tie()
-                
-        else:
+                    print(spaces)
+                           
+                if check_winner() is True:
+                    player_win()
+                    
+                elif check_winner() == "Empate":
+                    tie()
+                    
+            else:
 
-            buttons[random.randrange(3)][random.randrange(3)]['text'] = bots[1]
-            player_move()            
-            
-            while check_winner() is False:
-
+                buttons[random.randrange(3)][random.randrange(3)]['text'] = bots[1]
+                player_move()            
+                
                 if player_move():
                     buttons[random.randrange(3)][random.randrange(3)]['text'] = bots[1]
+                    print(spaces)
                     
                 else:
                     player_move()
-                break
-            
-            checking()
+                    print(spaces)
 
+                
+                if check_winner() is False:
+                    player_move()
+        
+                elif check_winner() is True:
+                    bot_win()
+                                            
+                elif check_winner() == "Empate":
+                    tie()
+        break
                
 def medium():
     new_game()
@@ -303,7 +300,15 @@ score_x_label.place(x=173, y=120)
 score_break = Label(window, text=":", font=(
     'Sans-serif', 20, 'bold'))
 score_break.place(x=149, y=118)  
-
+   
+def restarting_score():
+    
+    global score_o, score_x
+    score_o = 0
+    score_x = 0
+    score_o_label['text'] = 0
+    score_x_label['text'] = 0   
+  
   
 # _________________CHOOSE "O" BUTTON_____________________
 
@@ -312,7 +317,7 @@ def clicked_o():
     if player == players[0]:
         click()
     else:
-        click_2()
+        click()   
 
 icon_o = tk.PhotoImage(file='./assets/o.png')
 button_o = ttk.Button(
@@ -331,7 +336,7 @@ def clicked_x():
     if player == players[1]:
         click()
     else:   
-        click_2()
+        click()
 
 icon_x = tk.PhotoImage(file='./assets/x.png')
 button_x = ttk.Button(
